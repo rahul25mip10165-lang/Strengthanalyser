@@ -1,0 +1,36 @@
+import re
+import string
+import secrets
+def check_password_strength(password):
+    """returns 'weak', 'medium', or 'strong' based on common criteria."""
+    criteria = [
+        len(password) >= 8,
+        re.search(r"\d", password) is not None,      
+        re.search(r"[A-Z]", password) is not None,   
+        re.search(r"[a-z]", password) is not None,   
+        re.search(r"\W|_", password) is not None    
+    ]
+    criteria_met_count  =  sum(criteria)
+
+    if criteria_met_count  ==  5:
+        return "Strong"
+    elif criteria_met_count  >=  3:
+        return "Medium"
+    else:
+        return "Weak"
+def generate_strong_password(length = 12):
+    """Generates a cryptographically strong random password."""
+    alphabet = string.ascii_letters + string.digits + string.punctuation
+    while True:
+        password  =  ''.join(secrets.choice(alphabet) for _ in range(length))
+        if check_password_strength(password)  ==  "Strong":
+            break
+    return password
+if __name__  ==  "__main__":
+    test_pw  =  input("Enter a password to check: ")
+    strength  =  check_password_strength(test_pw)
+    print(f"'{test_pw}' is: {strength}")
+    print("\nHere is a suggested strong password:")
+    suggested  =  generate_strong_password(14)
+    print(f"Suggestion: {suggested}")
+    print(f"Strength check for suggestion: {check_password_strength(suggested)}")
